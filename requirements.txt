@@ -1,3 +1,7 @@
+# Course requirements
+python-dotenv
+streamlit
+openai
 
 # Code QA
 black
