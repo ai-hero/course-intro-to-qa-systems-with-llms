@@ -1,5 +1,5 @@
 """Test hello_mlops"""
-from introduction.hello_mlops import get_response
+from introduction.hello_milo import get_response
 
 
 def test_greet() -> None:

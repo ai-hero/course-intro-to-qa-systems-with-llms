@@ -1,6 +1,6 @@
-# courses
+#
 
-# Getting started
+# Setting Up Dependencies
 
 ```
 source setup.sh
@@ -9,4 +9,9 @@ source setup.sh
 And when done,
 ```
 deactivate
+```
+
+# Hello Milo
+```
+streamlit run introduction/hello_milo.py
 ```

@@ -22,32 +22,33 @@ def get_response(messages: List[Dict[str, Any]], stream: bool = True) -> Respons
     return openai.ChatCompletion.create(model=MODEL_NAME, messages=messages, stream=stream)
 
 
+SCOPE = False
+
+
 def main() -> None:
     """Run the chatbot."""
-    st.title("Chat with the MLOps.Community 👋")
+    st.title("Chat with Milo, from MLOps.Community 👋")
 
     if "messages" not in st.session_state:
         # Priming the model with a message
         # To create a custom chatbot.
-        # Feel free to change the message to whatever you want.
-        st.session_state.messages = [
-            {
-                "role": "system",
-                "content": (
-                    # Identity
-                    "Your name is Milo. You are a chatbot representing the MLOps Community. "
-                    # Purpose
-                    "Your purpose is to answer questions about the MLOps Community. "
-                    # Introduce yourself
-                    "Introduce yourself to the user. "
-                    # Scoping
-                    "Please answer the user's questions based on what you known about the commmumnity. "
-                    "If the question is outside scope of AI, Machine Learning, or MLOps, please politely decline. "
-                    "Answer questions in the scope of what you know about the community. "
-                    "If you don't know the answer, please politely decline. "
-                ),
-            }
-        ]
+        system_prompt = (
+            # Identity
+            "Your name is Milo. You are a chatbot representing the MLOps Community. "
+            # Purpose
+            "Your purpose is to answer questions about the MLOps Community. "
+            # Introduce yourself
+            "If the user says hi, introduce yourself to the user."
+        )
+        if SCOPE:
+            system_prompt += (
+                # Scoping
+                "Please answer the user's questions based on what you known about the commmumnity. "
+                "If the question is outside scope of AI, Machine Learning, or MLOps, please politely decline. "
+                "Answer questions in the scope of what you know about the community. "
+                "If you don't know the answer, please politely decline. "
+            )
+        st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
     # Display chat messages
     for message in st.session_state.messages:
