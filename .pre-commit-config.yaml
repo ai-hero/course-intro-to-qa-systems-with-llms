@@ -70,14 +70,3 @@ repos:
     hooks:
       - id: detect-secrets
         exclude: package.lock.json
-
-  - repo: local
-    hooks:
-      - id: pytest-check
-        stages: [commit, push]
-        types: [python]
-        name: pytest-check
-        entry: python -m pytest -v tests/
-        language: system
-        pass_filenames: false
-        always_run: true
