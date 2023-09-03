@@ -4,9 +4,11 @@ streamlit
 
 # Tools
 openai
+anthropic
 requests_html
 llama-cpp-python
 html2text
+youtube-transcript-api
 nltk
 llama-index
 langchain
