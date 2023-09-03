@@ -59,7 +59,7 @@ def main() -> None:
             "Please answer the user's questions based on what you known about the commmumnity. "
             "If the question is outside scope of AI, Machine Learning, or MLOps, please politely decline. "
             "Answer questions in the scope of what you know about the community. "
-            "If you don't know the answer, please politely decline. "
+            "If you don't know the answer, say `I don't know`. "
         )
         st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
