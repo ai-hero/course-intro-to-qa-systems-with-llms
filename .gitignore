@@ -2,6 +2,8 @@
 .vscode
 *.env
 venv
+.kb
+.content
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

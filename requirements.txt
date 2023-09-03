@@ -1,7 +1,15 @@
 # Course requirements
 python-dotenv
 streamlit
+
+# Tools
 openai
+requests_html
+llama-cpp-python
+html2text
+nltk
+llama-index
+langchain
 
 # Code QA
 black

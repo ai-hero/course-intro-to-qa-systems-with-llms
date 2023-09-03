@@ -1,12 +1,17 @@
-"""A simple chatbot using the OpenAI API."""
+"""A basic chatbot using the OpenAI API + Community Notion Info"""
+import logging
 import os
+import sys
 from typing import Any, Dict, Generator, List, Union
 
 import openai
 import streamlit as st
 from dotenv import load_dotenv
+from llama_index import StorageContext, load_index_from_storage
 
-MODEL_NAME = "gpt-3.5-turbo"
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
+
 ResponseType = Union[Generator[Any, None, None], Any, List, Dict]
 
 # Load the .env file
@@ -17,16 +22,27 @@ assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-def get_response(messages: List[Dict[str, Any]], stream: bool = True) -> ResponseType:
-    """Get response from OpenAI API."""
-    return openai.ChatCompletion.create(model=MODEL_NAME, messages=messages, stream=stream)
+@st.cache_resource(show_spinner=False)  # type: ignore[misc]
+def load_index() -> Any:
+    """Load the index from the storage directory."""
+    print("Loading index...")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    dir_path = os.path.join(base_dir, ".kb")
 
-
-SCOPE = False
+    # rebuild storage context
+    storage_context = StorageContext.from_defaults(persist_dir=dir_path)
+    # load index
+    index = load_index_from_storage(storage_context)
+    query_engine = index.as_query_engine()
+    print("Done.")
+    return query_engine
 
 
 def main() -> None:
     """Run the chatbot."""
+    if "query_engine" not in st.session_state:
+        st.session_state.query_engine = load_index()
+
     st.title("Chat with Milo, from MLOps.Community 👋")
 
     if "messages" not in st.session_state:
@@ -39,15 +55,12 @@ def main() -> None:
             "Your purpose is to answer questions about the MLOps Community. "
             # Introduce yourself
             "If the user says hi, introduce yourself to the user."
+            # Scoping
+            "Please answer the user's questions based on what you known about the commmumnity. "
+            "If the question is outside scope of AI, Machine Learning, or MLOps, please politely decline. "
+            "Answer questions in the scope of what you know about the community. "
+            "If you don't know the answer, please politely decline. "
         )
-        if SCOPE:
-            system_prompt += (
-                # Scoping
-                "Please answer the user's questions based on what you known about the commmumnity. "
-                "If the question is outside scope of AI, Machine Learning, or MLOps, please politely decline. "
-                "Answer questions in the scope of what you know about the community. "
-                "If you don't know the answer, please politely decline. "
-            )
         st.session_state.messages = [{"role": "system", "content": system_prompt}]
 
     # Display chat messages
@@ -68,12 +81,12 @@ def main() -> None:
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
-            full_response = ""
-            for response in get_response(st.session_state.messages, stream=True):
-                full_response += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(full_response + "▌")
+            print("Querying query engine API...")
+            response = st.session_state.query_engine.query(prompt)
+            full_response = f"{response}"
+            print(full_response)
             message_placeholder.markdown(full_response)
-        st.session_state.messages.append({"role": "assistant", "content": full_response})
+            st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 
 if __name__ == "__main__":
