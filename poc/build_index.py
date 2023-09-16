@@ -1,4 +1,5 @@
 """ Build the vector index from the markdown files in the directory. """
+import json
 import logging
 import os
 import sys
@@ -30,6 +31,21 @@ def main() -> None:
     chats_df = chats_df.fillna("")
     print("Number of all conversations: ", len(chats_df))
 
+    # Cache of embeddings from data
+    # The embedding for each conversation with its thread_id (Note: not all embeddings were generated for the chat text)
+    # Create a temp index of the chats
+    chats_index = {}
+    for _, row in tqdm(chats_df.iterrows(), desc="Creating temporary chats index"):
+        chats_index[row["thread_id"]] = row["chat_text"]
+
+    embeddings_df = pd.read_csv(os.path.join(base_dir, ".content", "chats", "chats-embeddings-ada-002.csv"))
+    embeddings_df.head()
+    embeddings_cache = {}
+    for index, row in tqdm(embeddings_df.iterrows(), desc="Creating a cache of embeddings"):
+        chat_text = chats_index[row["thread_id"]]
+        embedding = json.loads(row["embedding"])
+        embeddings_cache[chat_text] = embedding
+
     chats = []
     if "summary" not in chats_df.columns:
         chats_df["summary"] = [""] * len(chats_df)
@@ -38,9 +54,14 @@ def main() -> None:
     for index, row in tqdm(chats_df.iterrows(), total=len(chats_df)):
         try:
             if row.get("summary"):
-                chat = Chat(thread_id=row["thread_id"], text=row["chat_text"], summary=row["summary"])
+                chat = Chat(
+                    thread_id=row["thread_id"],
+                    text=row["chat_text"],
+                    summary=row["summary"],
+                    embeddings_cache=embeddings_cache,
+                )
             else:
-                chat = Chat(thread_id=row["thread_id"], text=row["chat_text"])
+                chat = Chat(thread_id=row["thread_id"], text=row["chat_text"], embeddings_cache=embeddings_cache)
             chats_df.at[index, "summary"] = chat.summary
             chats.append(chat)
             # Save the summary to the csv, overwrite the file

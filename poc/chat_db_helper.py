@@ -5,7 +5,7 @@
 """
 
 import os
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 import chromadb
 import openai
@@ -14,8 +14,10 @@ from tqdm import tqdm
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 
-def get_embedding(text: str) -> Any:
+def get_embedding(text: str, embeddings_cache: Optional[Dict[str, List[float]]] = None) -> Any:
     """Use the same embedding generator as what was used on the data!!!"""
+    if embeddings_cache and text in embeddings_cache:
+        return embeddings_cache[text]
     if len(text) / 4 > 8000:  # Hack to be under the 8k limit, one token ~= 4 characters
         text = text[:8000]
     response = openai.Embedding.create(model="text-embedding-ada-002", input=text)
@@ -25,7 +27,13 @@ def get_embedding(text: str) -> Any:
 class Chat:
     """A chat conversation."""
 
-    def __init__(self, thread_id: str, text: str, summary: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        thread_id: str,
+        text: str,
+        summary: Optional[str] = None,
+        embeddings_cache: Optional[Dict[str, List[float]]] = None,
+    ) -> None:
         """Initialize the chat."""
         self.thread_id = thread_id
         self.text = text
@@ -33,7 +41,7 @@ class Chat:
             self.summary = summary
         else:
             self.summary = self._summarize(text)
-        self.embedding = get_embedding(text)
+        self.embedding = get_embedding(text, embeddings_cache)
 
     def _summarize(self, text: str) -> Any:
         """Summarize conversations since individually they are long and go over 8k limit"""
@@ -66,7 +74,7 @@ class ChatVectorDB:
         base_dir = os.path.dirname(os.path.abspath(__file__))
         db_path = os.path.join(base_dir, ".content")
         os.makedirs(db_path, exist_ok=True)
-        self.client = chromadb.PersistentClient(os.path.join(db_path, "chroma.db"))  # pylint: disable=no-member
+        self.client = chromadb.PersistentClient(os.path.join(db_path, "chroma.db"))
         try:
             self.collection = self.client.get_collection(self.collection_name)
         except ValueError:

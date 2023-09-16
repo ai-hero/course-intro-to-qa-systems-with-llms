@@ -12,7 +12,7 @@ youtube-transcript-api
 nltk
 llama-index
 langchain
-chromadb
+chromadb==0.4.10
 gdown
 pandas
 tqdm

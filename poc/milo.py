@@ -6,10 +6,9 @@ from typing import Any, Dict, Generator, List, Tuple, Union
 
 import openai
 import streamlit as st
+from answer_generator import answer_question
 from chat_db_helper import ChatVectorDB
 from dotenv import load_dotenv
-
-from poc.answer_generator import answer_question
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
@@ -67,7 +66,7 @@ def main() -> None:
             st.write(answer)
             st.write("")
             st.write("### Summaries")
-            st.write(summaries)
+            st.markdown(summaries)
 
 
 if __name__ == "__main__":
