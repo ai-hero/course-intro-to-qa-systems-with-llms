@@ -16,6 +16,7 @@ chromadb
 gdown
 pandas
 tqdm
+watchdog
 
 # Code QA
 black

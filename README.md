@@ -23,3 +23,7 @@ MLOPS_DATA_URL=
 ```
 streamlit run introduction/hello_milo.py
 ```
+
+# Course Proof-of-concept Prototype
+
+The proof of concept prototype for the course is in the folder `poc/`
