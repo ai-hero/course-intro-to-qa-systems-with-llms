@@ -23,7 +23,7 @@ load_dotenv()
 assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
+# Load the chat vector database
 chat_vector_db = ChatVectorDB()
 
 
@@ -59,6 +59,8 @@ def main() -> None:
         st.stop()
 
     if question:
+        # Streamlit is progressive, everytime you change something in the UI,
+        # code below will be re-run
         with st.spinner("Thinking..."):
             summaries, answer = get_answer(question)
             st.write("### Answer")

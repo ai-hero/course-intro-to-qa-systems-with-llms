@@ -5,6 +5,10 @@ import os
 from typing import Any
 
 import openai
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv(dotenv_path="./.env")  # Change this to your own .env file, if not using the venv
 
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 

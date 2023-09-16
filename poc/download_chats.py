@@ -2,6 +2,11 @@
 import os
 
 import gdown
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv(dotenv_path="./.env")  # Change this to your own .env file, if not using the venv
+assert os.getenv("MLOPS_DATA_URL") is not None, "MLOPS_DATA_URL not found in .env file"
 
 
 def download_chats_from_gdrive() -> None:
@@ -13,7 +18,7 @@ def download_chats_from_gdrive() -> None:
         print("Directory already exists. Skipping download.")
         return
     gdown.download_folder(
-        "https://drive.google.com/drive/folders/1TmNPMr15Iw_HnqKJWWpDJFVSMqaBXy9m?usp=sharing",
+        os.getenv("MLOPS_DATA_URL"),
         output=dir_path,
         quiet=False,
     )

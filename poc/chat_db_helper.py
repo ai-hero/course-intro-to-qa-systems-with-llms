@@ -16,6 +16,8 @@ openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 def get_embedding(text: str) -> Any:
     """Use the same embedding generator as what was used on the data!!!"""
+    if len(text) / 4 > 8000:  # Hack to be under the 8k limit, one token ~= 4 characters
+        text = text[:8000]
     response = openai.Embedding.create(model="text-embedding-ada-002", input=text)
     return response.data[0].embedding
 
@@ -35,7 +37,7 @@ class Chat:
 
     def _summarize(self, text: str) -> Any:
         """Summarize conversations since individually they are long and go over 8k limit"""
-        if len(text) > 3800:
+        if len(text) / 4 > 3800:  # Hack to be under the 4k limit, one token ~= 4 characters
             text = text[:3800]
         prompt = (
             "Summarize the following Slack conversation. Do not use ids, usernames, mentions, \
