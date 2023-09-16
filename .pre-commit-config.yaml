@@ -17,13 +17,13 @@ repos:
       - id: mixed-line-ending
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 23.9.1
     hooks:
       - id: black
         language_version: python3.8
 
   - repo: https://github.com/psf/black
-    rev: 23.7.0
+    rev: 23.9.1
     hooks:
       - id: black-jupyter
         language_version: python3.8
@@ -36,10 +36,12 @@ repos:
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.0.287
+    rev: v0.0.290
     hooks:
       - id: ruff
+        args: [--fix]
         types_or: [python, pyi, jupyter]
+        exclude: poc/explore.ipynb
 
   - repo: https://github.com/econchick/interrogate
     rev: 1.5.0
@@ -54,7 +56,7 @@ repos:
         name: isort (python)
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.10.1
+    rev: v3.11.0
     hooks:
       - id: pyupgrade
         args: [--py36-plus]
@@ -69,4 +71,14 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
-        exclude: package.lock.json
+        name: "detect-secrets"
+        args: ["--exclude-files", '.*\.ipynb$']
+      - id: detect-secrets
+        name: "detect-secrets-jupyter"
+        args:
+          [
+            "--exclude-files",
+            ".*[^i][^p][^y][^n][^b]$",
+            "--exclude-lines",
+            '"(hash|id|authorship_tag|image/\w+)":.*',
+          ]

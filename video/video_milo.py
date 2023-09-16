@@ -19,7 +19,7 @@ ResponseType = Union[Generator[Any, None, None], Any, List, Dict]
 load_dotenv()
 
 # Set up the OpenAI API key
-assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
+assert os.getenv("ANTHROPIC_API_KEY"), "Please set your ANTHROPIC_API_KEY environment variable."
 anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
 
 

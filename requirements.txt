@@ -12,6 +12,10 @@ youtube-transcript-api
 nltk
 llama-index
 langchain
+chromadb
+gdown
+pandas
+tqdm
 
 # Code QA
 black
