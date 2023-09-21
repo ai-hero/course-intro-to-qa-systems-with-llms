@@ -25,7 +25,7 @@ MLOPS_DATA_URL=
 # Hello Milo
 
 ```sh { name=start background=true }
-streamlit run introduction/hello_milo.py
+streamlit run poc/milo.py
 ```
 
 # Course Proof-of-concept Prototype
