@@ -24,8 +24,10 @@ MLOPS_DATA_URL=
 
 # Hello Milo
 
-```sh { name=start background=true }
-streamlit run poc/milo.py
+A simple MLOps Q&A bot using OpenAI directly. Note: DOES NOT USE RETRIVAL-AUGMENTED GENERATION.
+
+```sh { name=start-without-rag background=true }
+streamlit run introduction/hello_milo.py
 ```
 
 # Course Proof-of-concept Prototype
@@ -42,10 +44,8 @@ The proof of concept prototype for the course is in the folder `poc/`:
 
 # Hello Milo
 
-A simple MLOps Q&A bot using OpenAI directly. Note: DOES NOT USE RETRIVAL-AUGMENTED GENERATION.
-
-```sh { name=start-without-rag background=true }
-streamlit run introduction/hello_milo.py
+```sh { name=start background=true }
+streamlit run poc/milo.py
 ```
 
 # Q&A on Video
