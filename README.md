@@ -26,7 +26,7 @@ MLOPS_DATA_URL=
 
 A simple MLOps Q&A bot using OpenAI directly. Note: DOES NOT USE RETRIVAL-AUGMENTED GENERATION.
 
-```sh { name=start-without-rag background=true }
+```sh
 streamlit run introduction/hello_milo.py
 ```
 
@@ -44,7 +44,7 @@ The proof of concept prototype for the course is in the folder `poc/`:
 
 # Hello Milo
 
-```sh { name=start background=true }
+```sh
 streamlit run poc/milo.py
 ```
 
@@ -57,7 +57,7 @@ we need a LLM with a large window - for this we use Anthropic's Claude.
 
 Make sure you have your `ANTHROPIC_API_KEY` set in your `.env` file.
 
-```sh { name=start-video background=true }
+```sh
 streamlit run video/video_milo.py
 ```
 
