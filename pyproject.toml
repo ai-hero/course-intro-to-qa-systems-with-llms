@@ -39,7 +39,7 @@ select = [
     "E",
     "F",
     "W",
-    "I001",
+    "I",
 ]
 src = ["src", "tests"]
 

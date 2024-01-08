@@ -3,7 +3,7 @@ python-dotenv
 streamlit
 
 # Tools
-openai==0.28.1
+openai
 anthropic
 requests_html
 llama-cpp-python
@@ -12,7 +12,7 @@ youtube-transcript-api
 nltk
 llama-index
 langchain
-chromadb==0.4.10
+chromadb
 gdown
 pandas
 tqdm
