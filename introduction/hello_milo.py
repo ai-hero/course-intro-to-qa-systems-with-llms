@@ -24,7 +24,7 @@ def get_response(messages: List[Dict[str, Any]], stream: bool = True) -> Any:
             if chunk.choices[0].delta.content is not None:
                 yield chunk.choices[0].delta.content
     else:
-        return response.choices[0].message.content
+        yield response.choices[0].message.content
 
 
 SCOPE = False
