@@ -5,7 +5,7 @@ streamlit
 # Tools
 openai
 anthropic
-requests_html
+pyppeteer
 llama-cpp-python
 html2text
 youtube-transcript-api

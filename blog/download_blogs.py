@@ -1,8 +1,20 @@
+""" Download blogs in the URLS """
+import asyncio
 import os
-from typing import List
+from typing import Any, List
 
 import html2text
-from requests_html import HTMLSession
+from pyppeteer import launch
+
+
+async def fetch_page(url: str) -> Any:
+    """Launch a browser, navigate to the URL, and return the HTML content."""
+    browser = await launch()
+    page = await browser.newPage()
+    await page.goto(url, waitUntil="networkidle0")
+    content = await page.content()
+    await browser.close()
+    return content
 
 
 def download_and_save_in_markdown(url: str, dir_path: str) -> None:
@@ -10,19 +22,15 @@ def download_and_save_in_markdown(url: str, dir_path: str) -> None:
     # Extract a filename from the URL
     if url.endswith("/"):
         url = url[:-1]
-
     filename = url.split("/")[-1] + ".md"
     print(f"Downloading {url} into {filename}...")
 
-    session = HTMLSession()
-    response = session.get(url, timeout=30)
+    # Fetch the page content using pyppeteer
+    html_content = asyncio.get_event_loop().run_until_complete(fetch_page(url))
 
-    # Render the page, which will execute JavaScript
-    response.html.render()
-
-    # Convert the rendered HTML content to markdown
+    # Convert the HTML content to markdown
     h = html2text.HTML2Text()
-    markdown_content = h.handle(response.html.raw_html.decode("utf-8"))
+    markdown_content = h.handle(html_content)
 
     # Write the markdown content to a file
     filename = os.path.join(dir_path, filename)
