@@ -8,19 +8,26 @@ import os
 from typing import Any, Dict, List, Optional
 
 import chromadb
-import openai
+from dotenv import load_dotenv
+from openai import OpenAI
 from tqdm import tqdm
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Load the .env file
+load_dotenv()
+
+# Set up the OpenAI API key
+assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
+
+client = OpenAI()
 
 
 def get_embedding(text: str, embeddings_cache: Optional[Dict[str, List[float]]] = None) -> Any:
     """Use the same embedding generator as what was used on the data!!!"""
     if embeddings_cache and text in embeddings_cache:
         return embeddings_cache[text]
-    if len(text) / 4 > 8000:  # Hack to be under the 8k limit, one token ~= 4 characters
+    if len(text) > 8000:  # Hack to be under the 8k limit
         text = text[:8000]
-    response = openai.Embedding.create(model="text-embedding-ada-002", input=text)
+    response = client.embeddings.create(model="text-embedding-ada-002", input=text)
     return response.data[0].embedding
 
 
@@ -55,7 +62,9 @@ If there is no question, generate a question that might be used to retrieve this
             + text
             + "```"
         )
-        completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+        completion = client.chat.completions.create(
+            model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}]
+        )
         return completion.choices[0].message.content
 
     def __repr__(self) -> str:
@@ -72,7 +81,7 @@ class ChatVectorDB:
         self.db_name = "chroma.db"
         self.collection_name = f"chats-{ChatVectorDB.chat_db_version}"
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        db_path = os.path.join(base_dir, ".content")
+        db_path = os.path.join(base_dir, ".kb")
         os.makedirs(db_path, exist_ok=True)
         self.client = chromadb.PersistentClient(os.path.join(db_path, "chroma.db"))
         try:

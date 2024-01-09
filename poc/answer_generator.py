@@ -4,13 +4,16 @@
 import os
 from typing import Any
 
-import openai
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # Load the .env file
-load_dotenv(dotenv_path="./.env")  # Change this to your own .env file, if not using the venv
+load_dotenv()
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+# Set up the OpenAI API key
+assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
+
+client = OpenAI()
 
 
 def answer_question(question: str, context: str) -> Any:
@@ -30,6 +33,6 @@ def answer_question(question: str, context: str) -> Any:
         "```"
         f"\nQuestion: {question}"
     )
-    completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+    completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
     content = completion.choices[0].message.content
     return content

@@ -5,10 +5,10 @@ import os
 import sys
 import traceback
 
-import openai
 import pandas as pd
 from chat_db_helper import Chat, ChatVectorDB
 from dotenv import load_dotenv
+from openai import OpenAI
 from tqdm import tqdm
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -19,7 +19,8 @@ load_dotenv()
 
 # Set up the OpenAI API key
 assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+client = OpenAI()
 
 
 def main() -> None:
@@ -42,6 +43,8 @@ def main() -> None:
     embeddings_df.head()
     embeddings_cache = {}
     for index, row in tqdm(embeddings_df.iterrows(), desc="Creating a cache of embeddings"):
+        if row["thread_id"] not in chats_index:
+            continue
         chat_text = chats_index[row["thread_id"]]
         embedding = json.loads(row["embedding"])
         embeddings_cache[chat_text] = embedding
