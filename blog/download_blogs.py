@@ -51,7 +51,7 @@ def download(pages: List[str]) -> str:
 
 
 PAGES = [
-    "https://mlops.community/building-the-future-with-llmops-the-main-challenges/",
+    "https://raw.githubusercontent.com/run-llama/llama_index/main/examples/paul_graham_essay/data/paul_graham_essay.txt",
 ]
 
 if __name__ == "__main__":

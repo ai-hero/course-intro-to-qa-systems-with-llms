@@ -55,7 +55,7 @@ A Q&A that answers questions based on a video transcript. Note: DOES NOT USE RET
 This is one example of RAG, where the entire transcript is the retrieved context. Since transcripts are large,
 we need a LLM with a large window - for this we use Anthropic's Claude.
 
-Make sure you have your `ANTHROPIC_API_KEY` set in your `.env` file.
+Make sure you have your `ANTHROPIC_API_KEY` from [console.anthropic.com](https://console.anthropic.com/) set in your `.env` file.
 
 ```sh
 streamlit run video/video_milo.py
@@ -65,7 +65,7 @@ e.g. Use `https://www.youtube.com/watch?v=0e5q4zCBtBs` and questions about the p
 
 # Q&A from blog articles
 
-Another example of RaG from blog data where we answer questions based on data on blugs that are publicly available.
+Another example of RAG from blog data where we answer questions based on data on blugs that are publicly available.
 
 a. First download the data with `python blog/download_blogs.py`.
 b. Then, build the index with the data pre-processing pipeline in `python blog/build_index.py`
