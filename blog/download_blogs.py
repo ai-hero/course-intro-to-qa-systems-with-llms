@@ -64,4 +64,5 @@ PAGES = [
 ]
 
 if __name__ == "__main__":
+    print("NOTE: This demo doesn't work in Github codespaces.")
     download(PAGES)
