@@ -2,25 +2,23 @@
 import logging
 import os
 import sys
-from typing import Any, Dict, Generator, List, Tuple, Union
+from typing import Any, List, Tuple
 
-import openai
 import streamlit as st
 from answer_generator import answer_question
 from chat_db_helper import ChatVectorDB
 from dotenv import load_dotenv
+from openai import OpenAI
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
-
-ResponseType = Union[Generator[Any, None, None], Any, List, Dict]
 
 # Load the .env file
 load_dotenv()
 
 # Set up the OpenAI API key
 assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
 # Load the chat vector database
 chat_vector_db = ChatVectorDB()
@@ -65,7 +63,7 @@ def main() -> None:
             st.write("### Answer")
             st.write(answer)
             st.write("")
-            st.write("### Summaries")
+            st.write("### Summaries Referenced")
             st.markdown(summaries)
 
 

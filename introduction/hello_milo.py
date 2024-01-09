@@ -1,25 +1,30 @@
 """A simple chatbot using the OpenAI API."""
 import os
-from typing import Any, Dict, Generator, List, Union
+from typing import Any, Dict, List
 
-import openai
 import streamlit as st
 from dotenv import load_dotenv
+from openai import OpenAI
 
 MODEL_NAME = "gpt-3.5-turbo"
-ResponseType = Union[Generator[Any, None, None], Any, List, Dict]
 
 # Load the .env file
 load_dotenv()
 
 # Set up the OpenAI API key
 assert os.getenv("OPENAI_API_KEY"), "Please set your OPENAI_API_KEY environment variable."
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI()
 
 
-def get_response(messages: List[Dict[str, Any]], stream: bool = True) -> ResponseType:
+def get_response(messages: List[Dict[str, Any]], stream: bool = True) -> Any:
     """Get response from OpenAI API."""
-    return openai.ChatCompletion.create(model=MODEL_NAME, messages=messages, stream=stream)
+    response = client.chat.completions.create(model=MODEL_NAME, messages=messages, stream=stream)
+    if stream:
+        for chunk in response:
+            if chunk.choices[0].delta.content is not None:
+                yield chunk.choices[0].delta.content
+    else:
+        yield response.choices[0].message.content
 
 
 SCOPE = False
@@ -69,9 +74,9 @@ def main() -> None:
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             full_response = ""
-            for response in get_response(st.session_state.messages, stream=True):
-                full_response += response.choices[0].delta.get("content", "")
-                message_placeholder.markdown(full_response + "▌")
+            for token in get_response(st.session_state.messages, stream=True):
+                full_response += token
+                message_placeholder.markdown(full_response + " ")
             message_placeholder.markdown(full_response)
         st.session_state.messages.append({"role": "assistant", "content": full_response})
 

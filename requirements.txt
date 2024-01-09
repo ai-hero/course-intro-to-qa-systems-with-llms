@@ -3,16 +3,29 @@ python-dotenv
 streamlit
 
 # Tools
-openai==0.28.1
+
+# For hello milo, blog, etc.
+openai
+
+# for the poc
+jupyter
+
+# for the video
 anthropic
-requests_html
-llama-cpp-python
-html2text
 youtube-transcript-api
-nltk
+
+# for the blog
+# Make sure you have chrome browser installed
+selenium
+webdriver-manager
+html2text
 llama-index
+
+
+llama-cpp-python
+nltk
 langchain
-chromadb==0.4.10
+chromadb
 gdown
 pandas
 tqdm

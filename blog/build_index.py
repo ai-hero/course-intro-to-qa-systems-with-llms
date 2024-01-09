@@ -1,6 +1,8 @@
+"""Build the vector index from the markdown files in the directory."""
 import logging
 import os
 import sys
+from glob import glob
 from shutil import rmtree
 
 import openai
@@ -24,7 +26,8 @@ service_context = ServiceContext.from_defaults(llm=OpenAI())
 def build_index(data_dir: str, knowledge_base_dir: str) -> None:
     """Build the vector index from the markdown files in the directory."""
     print("Building vector index...")
-    documents = SimpleDirectoryReader(data_dir).load_data()
+    input_files = glob(os.path.join(data_dir, "*.md"))
+    documents = SimpleDirectoryReader(input_files=input_files).load_data()
 
     index = TreeIndex.from_documents(documents, service_context=service_context)
     index.storage_context.persist(persist_dir=knowledge_base_dir)

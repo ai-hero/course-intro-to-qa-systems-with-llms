@@ -4,10 +4,6 @@ import os
 import gdown
 from dotenv import load_dotenv
 
-# Load the .env file
-load_dotenv(dotenv_path="./.env")  # Change this to your own .env file, if not using the venv
-assert os.getenv("MLOPS_DATA_URL") is not None, "MLOPS_DATA_URL not found in .env file"
-
 
 def download_chats_from_gdrive() -> None:
     """Download chats from Google Drive."""
@@ -22,3 +18,11 @@ def download_chats_from_gdrive() -> None:
         output=dir_path,
         quiet=False,
     )
+
+
+if __name__ == "__main__":
+    # Load the .env file
+    load_dotenv()  # Use 'dotenv_path=' arg to change this to your own .env file, if not using the venv
+
+    assert os.getenv("MLOPS_DATA_URL") is not None, "MLOPS_DATA_URL not found in .env file"
+    download_chats_from_gdrive()

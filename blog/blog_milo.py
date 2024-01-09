@@ -1,4 +1,4 @@
-"""A basic chatbot using the OpenAI API + Community Notion Info"""
+"""A basic chatbot using the OpenAI API + Community Notion Info."""
 import logging
 import os
 import sys
@@ -12,7 +12,7 @@ from llama_index import StorageContext, load_index_from_storage
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
 
-ResponseType = Union[Generator[Any, None, None], Any, List, Dict]
+ResponseType = Union[Generator[Any, None, None], Any, List[Any], Dict[str, Any]]
 
 # Load the .env file
 load_dotenv()
