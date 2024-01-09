@@ -7,20 +7,23 @@ streamlit
 # For hello milo, blog, etc.
 openai
 
-# for the video poc
-anthropic
+# for the poc
+jupyter
 
-# for the blog poc
+# for the video
+anthropic
+youtube-transcript-api
+
+# for the blog
 # Make sure you have chrome browser installed
 selenium
 webdriver-manager
 html2text
-
-#
-llama-cpp-python
-youtube-transcript-api
-nltk
 llama-index
+
+
+llama-cpp-python
+nltk
 langchain
 chromadb
 gdown
