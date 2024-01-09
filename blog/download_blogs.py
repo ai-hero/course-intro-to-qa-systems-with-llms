@@ -1,19 +1,28 @@
-""" Download blogs in the URLS """
-import asyncio
 import os
 from typing import Any, List
 
 import html2text
-from pyppeteer import launch
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 
-async def fetch_page(url: str) -> Any:
-    """Launch a browser, navigate to the URL, and return the HTML content."""
-    browser = await launch()
-    page = await browser.newPage()
-    await page.goto(url, waitUntil="networkidle0")
-    content = await page.content()
-    await browser.close()
+def setup_headless_chrome() -> webdriver.Chrome:
+    """Set up headless Chrome for Selenium."""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    service = Service(ChromeDriverManager().install())
+    return webdriver.Chrome(service=service, options=chrome_options)
+
+
+def fetch_page_selenium(url: str) -> Any:
+    """Use Selenium to fetch the page content."""
+    driver = setup_headless_chrome()
+    driver.get(url)
+    content = driver.page_source
+    driver.quit()
     return content
 
 
@@ -22,11 +31,11 @@ def download_and_save_in_markdown(url: str, dir_path: str) -> None:
     # Extract a filename from the URL
     if url.endswith("/"):
         url = url[:-1]
-    filename = url.split("/")[-1] + ".md"
+    filename = url.split("/")[-1] + ".txt"
     print(f"Downloading {url} into {filename}...")
 
-    # Fetch the page content using pyppeteer
-    html_content = asyncio.get_event_loop().run_until_complete(fetch_page(url))
+    # Fetch the page content using Selenium
+    html_content = fetch_page_selenium(url)
 
     # Convert the HTML content to markdown
     h = html2text.HTML2Text()
@@ -51,7 +60,7 @@ def download(pages: List[str]) -> str:
 
 
 PAGES = [
-    "https://raw.githubusercontent.com/run-llama/llama_index/main/examples/paul_graham_essay/data/paul_graham_essay.txt",
+    "https://mlops.community/building-the-future-with-llmops-the-main-challenges/",
 ]
 
 if __name__ == "__main__":

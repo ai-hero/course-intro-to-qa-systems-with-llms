@@ -3,11 +3,21 @@ python-dotenv
 streamlit
 
 # Tools
+
+# For hello milo, blog, etc.
 openai
+
+# for the video poc
 anthropic
-pyppeteer
-llama-cpp-python
+
+# for the blog poc
+# Make sure you have chrome browser installed
+selenium
+webdriver-manager
 html2text
+
+#
+llama-cpp-python
 youtube-transcript-api
 nltk
 llama-index
