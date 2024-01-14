@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  batch-upload:
+    build: .
+    container_name: batch-upload
+    env_file:
+      - .env
+    user: user
+    command: 
+      - python 
+      - upload.py
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    external: true
