@@ -2,22 +2,17 @@
 
 1. In `common/` create a `.env` file for the services:
 ```sh
-MINIO_ROOT_USER="minio-root-user"
-MINIO_ROOT_PASSWORD="minio-root-password"
-MINIO_ACCESS_KEY_ID="minio-access-key-id"
-MINIO_SECRET_ACCESS_KEY="minio-secret-access-key"
-REDIS_USER="redis-user"
-REDIS_PASSWORD="redis-password"
+MINIO_ROOT_USER="minio"
+MINIO_ROOT_PASSWORD="password"
+MINIO_REGION="us_1"
+S3_ACCESS_KEY_ID="access_key_id"
+S3_SECRET_ACCESS_KEY="secret_access_key"
+REDIS_PASSWORD="password"
 ```
 
 2. Create the netowork so that services in other files can access these
 ```sh
 docker network create --driver bridge my-network
-```
-3. Create a folder `data/` in `common/`.
-```
-cd common
-mkdir data
 ```
 4. Start the services
 ```sh
@@ -38,11 +33,45 @@ docker ps
 You should see something like:
 ```
 CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                       NAMES
-fd796492a007   minio/minio   "/usr/bin/docker-ent…"   6 minutes ago   Up 3 seconds   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   common-minio-1
-8fac49448c08   redis         "docker-entrypoint.s…"   6 minutes ago   Up 3 seconds   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   common-redis-1
+7223d96460b5   minio/minio       "/usr/bin/docker-ent…"   9 minutes ago    Up 9 minutes              0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   minio
+e4a2d563de01   redis             "docker-entrypoint.s…"   9 minutes ago    Up 9 minutes              0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis
 ```
 
 6. To turn it off
 ```sh
 docker compose down
+```
+
+
+## Setting up backend
+1. In backend folder create the .env file
+```sh
+S3_URL="minio:9000"
+S3_REGION="us_1"
+S3_ACCESS_KEY_ID="access_key_id"
+S3_SECRET_ACCESS_KEY="secret_access_key"
+S3_SECURE="false"
+S3_BUCKET_NAME="data"
+REDIS_URL="redis:6379"
+REDIS_DB="0"
+REDIS_PASSWORD="password"
+```
+
+2. Start the backend
+```sh
+cd backend
+docker compose up --build -d
+```
+
+### Run Batch Upload
+1. Create the .env file in the `batch-upload/` folder
+
+```
+BACKEND_URL="http://backend:8080"
+```
+
+2. Start the batch upload script. It uploads everything under `files/` folder with it's foldername and filename preserved (only one level for this workshop).
+```sh
+cd batch-upload
+docker compose up --build
 ```
