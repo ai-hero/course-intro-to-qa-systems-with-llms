@@ -1,3 +1,23 @@
+# Building a RAG-powered Knowledge Base
+In this project, we'll see what a scalable architecture for a knowledge base with RAG looks like. We'll assume that we start with a KB of text/markdown files (Other document formats can be extracted or converted to this format so that the LLM can understand it)
+
+## The App
+Our demo app will be a chatbot called Milo that can help answer questions based on MLOps community blogs.
+
+![Demo](demo.png)
+
+For simplicity, we'll assume that these blogs have already been exported to a folder structure (your pipeline for getting this might differ - for example, you may export it directly from your KB, or might crawl your blog site). We'll start from that folder and upload documents using an uploader job (your upload triggers might be different).
+
+Also, we use streamlit for the front-end to keep our scope to the back-end. In production, you might have a much more refined front end with user authentication, etc.
+
+## The Architecture
+The figure below shows the architecture and the two main processes we have - ingesting documents from the files KB to the vector store; and Q&A over the vectordb.
+
+![Architecture](architecture.png)
+
+We'll be using a containerized approach in combination with Docker Compose for the spinning these up.
+
+
 ## Setting up common services for platform
 
 1. In `common/` create a `.env` file for the services:
