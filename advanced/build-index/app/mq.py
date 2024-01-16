@@ -123,6 +123,7 @@ def upsert(content: str, context: Dict[str, str]) -> None:
         log.info(chunk_id)
         embedding = get_embedding(chunk)
         embeddings.append(embedding)
+        request_obj["text"] = chunk
         metadatas.append(request_obj)
         ids.append(chunk_id)
     chroma_collection.add(embeddings=embeddings, metadatas=metadatas, ids=ids)

@@ -7,11 +7,14 @@ import traceback
 from typing import Any
 from uuid import uuid4
 
+import chromadb
 import redis  # type: ignore
-from flask import Flask, jsonify, redirect
+from chromadb.config import Settings
+from flask import Flask, jsonify, redirect, request
 from flask_cors import CORS
 from minio import Minio
 from minio.error import S3Error
+from openai import OpenAI
 from werkzeug.exceptions import HTTPException, UnprocessableEntity
 
 # The flask api for serving predictions
@@ -42,6 +45,40 @@ minio_client = Minio(
 )
 
 bucket_name = os.environ["S3_BUCKET_NAME"]
+
+
+# Initialize Open AI client
+client = OpenAI()
+
+
+# Initialize Chroma Client
+# create client and a new collection
+chroma_collection_name = "blogs"
+
+chroma_client = chromadb.HttpClient(
+    host=os.environ["CHROMA_URL"],
+    port=os.environ["CHROMA_PORT"],
+    settings=Settings(
+        chroma_client_auth_provider="chromadb.auth.token.TokenAuthClientProvider",
+        chroma_client_auth_credentials=os.environ["CHROMA_AUTH_TOKEN"],
+    ),
+)
+chroma_client.heartbeat()
+
+try:
+    # Create the collection
+    chroma_collection = chroma_client.get_collection(chroma_collection_name)
+except (Exception, ValueError):
+    # Create the collection if it doesn't exist
+    chroma_collection = chroma_client.create_collection(chroma_collection_name)
+
+
+def get_embedding(text: str) -> Any:
+    """Use the same embedding generator as what was used on the data!!!"""
+    if len(text) > 8000:  # Hack to be under the 8k limit
+        text = text[:8000]
+    response = client.embeddings.create(model="text-embedding-ada-002", input=text)
+    return response.data[0].embedding
 
 
 @app.errorhandler(HTTPException)  # type: ignore
@@ -141,6 +178,41 @@ def ingest(folder: str, filename: str) -> Any:
         raise HTTPException(f"Unable to add to ingest queue: {e}")
 
     return jsonify(ingest_obj), 200
+
+
+@app.route("/chat", methods=["POST"])  # type: ignore
+def chat():
+    """Answer a question given a context."""
+    request_obj = request.get_json()
+    question = request_obj["question"]
+    embedding = get_embedding(question)
+    results = chroma_collection.query(query_embeddings=[embedding], n_results=3)
+    context = "\n".join([m["text"] for m in results["metadatas"][0]])
+
+    if not question.endswith("?"):
+        question = question + "?"
+
+    # Combine the summaries into a prompt and use SotA GPT-4 to answer.
+    prompt = (
+        # Identity
+        "Your name is Milo. You are a chatbot representing the MLOps Community. "
+        # Purpose
+        "Your purpose is to answer questions about the MLOps Community. "
+        # Introduce yourself
+        "If the user says hi, introduce yourself to the user."
+        # Scoping
+        "Please answer the user's questions based on the provided context. "
+        "If the answer is not in the context, reply 'I don't know'. "
+        "If the answer contains some personal information, remove it before answering. "
+        "But if it cannot be removed, please politely decline to answer."
+        "\nContext:```\n"
+        f"{context}"
+        "```"
+        f"\nQuestion: {question}"
+    )
+    completion = client.chat.completions.create(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
+    answer = completion.choices[0].message.content
+    return jsonify({"answer": answer}), 200
 
 
 if __name__ == "__main__":

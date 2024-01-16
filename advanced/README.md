@@ -47,6 +47,7 @@ docker compose down
 ```
 
 
+
 ## Setting up backend
 1. In backend folder create the .env file
 ```sh
@@ -59,25 +60,18 @@ S3_BUCKET_NAME="data"
 REDIS_URL="redis:6379"
 REDIS_DB="0"
 REDIS_PASSWORD="password"
+OPENAI_API_KEY="YOUR_OPENAI_KEY"
+CHROMA_URL="chroma"
+CHROMA_PORT="8000"
+CHROMA_AUTH_TOKEN="chroma-token"
 ```
+
+
 
 2. Start the backend
 ```sh
 cd backend
 docker compose up --build -d
-```
-
-### Run Batch Upload
-1. Create the .env file in the `batch-upload/` folder
-
-```
-BACKEND_URL="http://backend:8080"
-```
-
-2. Start the batch upload script. It uploads everything under `files/` folder with it's foldername and filename preserved (only one level for this workshop).
-```sh
-cd batch-upload
-docker compose up --build
 ```
 
 
@@ -102,3 +96,33 @@ CHROMA_SERVER_AUTH_CREDENTIALS="chroma-token"
 cd build-index
 docker compose up --build
 ```
+
+It will ingest the data you send in the next step
+
+# Run Batch Upload
+1. Create the .env file in the `batch-upload/` folder
+
+```
+BACKEND_URL="http://backend:8080"
+```
+
+2. Start the batch upload script. It uploads everything under `files/` folder with it's foldername and filename preserved (only one level for this workshop).
+```sh
+cd batch-upload
+docker compose up --build
+```
+
+# Running the Q&A App
+1. Go to the `milo/` folder
+
+2. Make sure you install dependencies:
+```sh
+pip install -r requirements.txt
+```
+
+3. Run the app
+```sh
+streamlit run milo.py
+```
+
+4. Ask your mlops questions from the database.

@@ -10,3 +10,7 @@ minio
 
 # Message Queue related
 redis
+
+# LLM
+chromadb
+openai
