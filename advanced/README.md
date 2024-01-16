@@ -8,19 +8,23 @@ MINIO_REGION="us_1"
 S3_ACCESS_KEY_ID="access_key_id"
 S3_SECRET_ACCESS_KEY="secret_access_key"
 REDIS_PASSWORD="password"
+CHROMA_SERVER_AUTH_CREDENTIALS="chroma-token"
+CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER="chromadb.auth.token.TokenConfigServerAuthCredentialsProvider"
+CHROMA_SERVER_AUTH_PROVIDER="chromadb.auth.token.TokenAuthServerProvider"
 ```
 
-2. Create the netowork so that services in other files can access these
+2. Create the network so that services in other files can access these
 ```sh
 docker network create --driver bridge my-network
 ```
 4. Start the services
 ```sh
+cd common
 docker compose up
 ```
 CTRL+C (maybe twice on codespaces) when you've confirmed everything is working as expected.
 
-5 When you're sure it all works: 
+5 When you're sure it all works:
 ```sh
 docker compose up -d
 ```
@@ -73,5 +77,28 @@ BACKEND_URL="http://backend:8080"
 2. Start the batch upload script. It uploads everything under `files/` folder with it's foldername and filename preserved (only one level for this workshop).
 ```sh
 cd batch-upload
+docker compose up --build
+```
+
+
+# Starting build-index ingestor queues
+1. Create the env var file in `build-index/`
+```sh
+S3_URL="minio:9000"
+S3_REGION="us_1"
+S3_ACCESS_KEY_ID="access_key_id"
+S3_SECRET_ACCESS_KEY="secret_access_key"
+S3_SECURE="false"
+S3_BUCKET_NAME="data"
+REDIS_URL="redis:6379"
+REDIS_DB="0"
+REDIS_PASSWORD="password"
+OPENAI_API_KEY="YOUR_OPENAI_KEY"
+CHROMA_SERVER_AUTH_CREDENTIALS="chroma-token"
+```
+
+2. Start the queue ingestor.
+```sh
+cd build-index
 docker compose up --build
 ```

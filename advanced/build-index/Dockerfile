@@ -1,7 +1,8 @@
 FROM python:3.10
 
 RUN apt-get -y update && apt-get install -y --no-install-recommends build-essential  \
-    curl wget ca-certificates \
+    curl wget ca-certificates npm \
+    && npm install pm2 -g \
     && pip install --upgrade pip setuptools \
     && rm -rf /var/lib/apt/lists/*
 
@@ -28,6 +29,9 @@ RUN chown -R user /home/user
 
 # Expose port
 EXPOSE 8080
+
+# Entrypoint
+ENTRYPOINT [ "sh", "./entrypoint" ]
 
 # Switch to the user
 USER user

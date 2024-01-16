@@ -25,6 +25,16 @@ services:
     networks:
       - my-network
 
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    container_name: chroma
+    volumes:
+      - .kb:/chroma/chroma
+    ports:
+      - 8000:8000
+    networks:
+      - my-network
+
   minio-client:
     image: minio/mc
     container_name: minio-client

@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  build-index:
+    build: .
+    container_name: build-index
+    env_file:
+      - .env
+    user: user
+    command: "start"
+    networks:
+      - my-network
+
+
+networks:
+  my-network:
+    external: true

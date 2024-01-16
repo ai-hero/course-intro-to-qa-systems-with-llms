@@ -37,11 +37,11 @@ Engineering with Python”| Co-host AI Right Podcast | British Data Award Winner
 
 [](https://www.linkedin.com/in/andrew-p-mcmahon/ "Linkedin")
 
-  
+
 
 _The following is an extract from[Andrew
 McMahon](https://www.linkedin.com/in/andymcmahon629/)’s book, Machine Learning
-Engineering with  
+Engineering with
 Python, Second Edition. Available on Amazon at <https://packt.link/w3JKL>._
 
 ![](https://mlops.community/wp-content/uploads/2023/08/image-4.png)
@@ -60,14 +60,14 @@ this area are:
 
   * **Larger infrastructure** , even for fine-tuning: As discussed previously, these models are far too large for typical organizations or teams to consider training their own, so instead teams will have to leverage third-party models, be they open-source or proprietary, and fine-tune them. Fine-tuning models of this scale will still be very expensive and so there will be a higher premium on building very efficient data ingestion, preparation, and training pipelines.
   * **Model management is different** : When you train your own models, effective ML engineering requires us to define good practices for versioning our models and storing metadata that provide the lineage of the experiments and training runs we have gone through to produce these models. In a world where models are more often hosted externally, this is slightly harder to do, as we do not have access to the training data, to the core model artefacts, and probably not even to the detailed model architecture. Versioning metadata will then likely default to the publicly available metadata for the model, think along the lines of gpt-4-v1.3 and similar-sounding names. That is not a lot of information to go on, and so you will likely have to think of ways to enrich this metadata, perhaps with your own example runs and test results in order to understand how that model behaved in certain scenarios. This then also links to the next point.
-  * **Rollbacks become more challenging** : If your model is hosted externally by a third party, you do not control the roadmap of that service. This means that if there is an issue with version 5 of a model and you want to roll back to version 4, that option might not be available to you. This is a different kind of “drift” from the model performance drift we’ve discussed at length in this book but it is going to become  
+  * **Rollbacks become more challenging** : If your model is hosted externally by a third party, you do not control the roadmap of that service. This means that if there is an issue with version 5 of a model and you want to roll back to version 4, that option might not be available to you. This is a different kind of “drift” from the model performance drift we’ve discussed at length in this book but it is going to become
 increasingly important. This will mean that you should have your own model,
 perhaps with nowhere near the same level of functionality or scale, ready as a
 last resort default to switch to in case of issues.
 
   * **Model performance is more of a challenge** : As mentioned in the previous point, with foundation models being served as externally hosted services, you are no longer in as much control as you were. This means that if you do detect any issues with the model you are consuming, be they drift or some other bugs, you are very limited in what you can do and you will need to consider that default rollback we just discussed.
 
-  * **Applying your own guardrails will be key** : LLMs hallucinate, they get things wrong, they can regurgitate training data, and they might even inadvertently offend the person interacting with them. All of this means that as these models are adopted by more organizations, there will be a growing need to develop methods for applying bespoke guardrails to systems utilizing them. As an example, if an LLM was being  
+  * **Applying your own guardrails will be key** : LLMs hallucinate, they get things wrong, they can regurgitate training data, and they might even inadvertently offend the person interacting with them. All of this means that as these models are adopted by more organizations, there will be a growing need to develop methods for applying bespoke guardrails to systems utilizing them. As an example, if an LLM was being
 used to power a next-generation chatbot, you could envisage that between the
 LLM service and the chat interface, you could have a system layer that checked
 for abrupt sentiment changes and important keywords or data that should be
@@ -84,7 +84,7 @@ long time to come. To me, this is one of the most exciting challenges we face
 as a community, how we harness one of the most sophisticated and cutting-edge
 capabilities ever developed by the ML community in a way that still allows the
 software to run safely, efficiently, and robustly for users day in and day
-out. Are you ready to take on that challenge?  
+out. Are you ready to take on that challenge?
 Let’s dive into some of these topics in a bit more detail, first with a
 discussion of LLM validation.
 
@@ -98,19 +98,19 @@ paragraph of generated text when asked to help summarize and analyze some
 document, how do you determine if the answer is “good”? If you ask an LLM to
 reformat some data into a table, how can you build a suitable metric that
 captures if it has done this correctly? In a generative context, what does
-“model performance”  
+“model performance”
 and “drift” really mean and how do I calculate them? Other questions may be
 more use case dependent, for example, if you are building an information
 retrieval or Retrieval-Augmented Generation (see Retrieval-Augmented
 Generation for Knowledge-Intensive NLP Tasks,
 <https://arxiv.org/pdf/2005.11401.pdf>) solution, how do you evaluate the
-truthfulness of the text generated by the LLM?  
-  
+truthfulness of the text generated by the LLM?
+
 There are also important considerations around how we screen the LLM-generated
 outputs for any potential biased or toxic outputs that may cause harm or
 reputational damage to the organization running the model. The world of LLM
-validation is complex!  
-  
+validation is complex!
+
 What can we do? Thankfully, this has not all happened in a vacuum and there
 have been several benchmarking tools and datasets released that can help us on
 our journey. Things are so young that there are not many worked examples of
@@ -123,7 +123,7 @@ crowdsourced development of tests against proposed text completions generated
 by LLMs. The core concept at the heart of evals is the “Completion Function
 Protocol,” which is a mechanism for standardizing the testing of the strings
 returned when interacting with an LLM. The framework is available on GitHub at
-<https://github.com/openai/evals>.  
+<https://github.com/openai/evals>.
 ● **Holistic Evaluation of Language Models (HELM)** : This project, from
 Stanford University, styles itself as a “living benchmark” for LLM
 performance. It gives you a wide variety of datasets, models, and metrics and
@@ -131,7 +131,7 @@ shows the performance across these different combinations. It is a very
 powerful resource that you can use to base your own test scenarios on, or
 indeed just to use the information directly to understand the risks and
 potential benefits of using any specific LLM for your use case. The HELM
-benchmarks are available at <https://crfm.stanford.edu/helm/latest/>.  
+benchmarks are available at <https://crfm.stanford.edu/helm/latest/>.
 ● **Guardrails AI** : This is a Python package that allows you to do
 validation on LLM outputs in the same style as Pydantic, which is a very
 powerful idea! You can also use it to build control flows with the LLM for
@@ -156,15 +156,15 @@ often referred to as “prompts” to capture the conversational origin of worki
 with these models and the concept that an input demands a response, the same
 way a prompt from a person would. For simplicity, we will call any input data
 that we feed to an LLM a prompt, whether this is in a user interface or via an
-API call and irrespective of the nature of the content we provide to the LLM.  
-  
+API call and irrespective of the nature of the content we provide to the LLM.
+
 Prompts are often quite different beasts from the data we typically feed into
 an ML model. They can be effectively freeform, have a variety of lengths, and,
 in most cases, express the intent for how we want the model to act. In other
 ML modeling problems, we can certainly feed in unstructured textual data, but
 this intent piece is missing. This all leads to some important considerations
-for us as ML engineers working with these models.  
-  
+for us as ML engineers working with these models.
+
 First, the shaping of prompts is important. The term prompt engineering has
 become popular in the data community recently and refers to the fact that
 there is often a lot of thought that goes into designing the content and
@@ -173,16 +173,16 @@ designing our ML systems with these models. We should be asking questions like
 “Can I standardize the prompt formats for my application or use case?”, “Can I
 provide appropriate additional formatting or content on top of what a user or
 input system provides to get a better outcome?”, and similar questions. I will
-stick with calling  
-this prompt engineering.  
-  
+stick with calling
+this prompt engineering.
+
 Secondly, prompts are not your typical ML input, and tracking and managing
 them is a new, interesting challenge. This challenge is compounded by the fact
 that the same prompt may give very different outputs for different models, or
 even with different versions of the same model. We should think carefully
 about tracking the lineage of our prompts and the outputs they generate. I
-term this challenge as prompt management.  
-  
+term this challenge as prompt management.
+
 Finally, we have a challenge that is not necessarily unique to prompts but
 definitely becomes a more pertinent one if we allow users of a system to feed
 in their own prompts, for example in chat interfaces. In this case, we need to
@@ -191,8 +191,8 @@ coming out of the model to ensure that the model is not “jailbroken” in some
 way to evade any guardrails. We would also want to guard against adversarial
 attacks that may be designed to extract training data from these systems,
 thereby gaining personally identifiable or other critical information that we
-do not wish to be shared.  
-  
+do not wish to be shared.
+
 As you begin to explore this brave new world of LLMOps with the rest of the
 world, it will be important to keep these prompt-related challenges in mind.
 
@@ -217,8 +217,8 @@ Engineering with Python”| Co-host AI Right Podcast | British Data Award Winner
 [ View all posts ](https://mlops.community/author/andrew/ "View all posts") [
 ](mailto:andrewpmcmahon629@gmail.com) [ ](https://electricweegie.com/)
 
-###  
-  
+###
+
 Related posts:
 
 [ ![](https://mlops.community/wp-content/uploads/2022/02/model-
@@ -246,7 +246,7 @@ Models")
 
 Tags: [LLMOps](https://mlops.community/tag/llmops/),
 [LLMs](https://mlops.community/tag/llms/),
-[MLops](https://mlops.community/tag/mlops/)  
+[MLops](https://mlops.community/tag/mlops/)
 
 ![MLOps Community](https://mlops.community/wp-
 content/themes/mlops/assets/logos/logo-mlops-white.svg)

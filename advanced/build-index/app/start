@@ -1,0 +1,2 @@
+#!/bin/bash
+pm2 start mq.py --name ingest_mq --interpreter python3 --no-daemon
