@@ -1,0 +1,10 @@
+# S3 client
+minio
+
+# Message Queue related
+redis
+
+# LLM
+openai
+chromadb
+llama-index

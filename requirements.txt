@@ -30,6 +30,9 @@ gdown
 pandas
 tqdm
 watchdog
+redis
+types-redis
+
 
 # Code QA
 black

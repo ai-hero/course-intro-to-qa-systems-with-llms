@@ -1,0 +1,16 @@
+# HTTP endpoint related
+flask
+flask-cors
+flask-expects-json
+gevent
+gunicorn
+
+# S3 client
+minio
+
+# Message Queue related
+redis
+
+# LLM
+chromadb
+openai

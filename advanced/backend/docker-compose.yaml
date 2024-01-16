@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health_check"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+    user: user
+    command: "serve"
+    networks:
+      - my-network
+
+
+networks:
+  my-network:
+    external: true
+
