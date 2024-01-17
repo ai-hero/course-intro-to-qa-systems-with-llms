@@ -31,7 +31,7 @@ def download_and_save_in_markdown(url: str, dir_path: str) -> None:
     # Extract a filename from the URL
     if url.endswith("/"):
         url = url[:-1]
-    filename = url.split("/")[-1] + ".txt"
+    filename = url.split("/")[-1] + ".md"
     print(f"Downloading {url} into {filename}...")
 
     # Fetch the page content using Selenium
