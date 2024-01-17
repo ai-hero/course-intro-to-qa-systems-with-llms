@@ -40,32 +40,22 @@ docker network create --driver bridge my-network
 4. Start the services
 ```sh
 cd common
-docker compose up
-```
-CTRL+C (maybe twice on codespaces) when you've confirmed everything is working as expected.
-
-5 When you're sure it all works:
-```sh
 docker compose up -d
 ```
 
 And see what's working:
 ```sh
 docker ps
+cd ..
 ```
 
 You should see something like:
 ```
-CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                       NAMES
-7223d96460b5   minio/minio       "/usr/bin/docker-ent…"   9 minutes ago    Up 9 minutes              0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   minio
-e4a2d563de01   redis             "docker-entrypoint.s…"   9 minutes ago    Up 9 minutes              0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis
+CONTAINER ID   IMAGE                               COMMAND                  CREATED          STATUS         PORTS                                       NAMES
+b646fcdecbf4   redis                               "docker-entrypoint.s…"   38 seconds ago   Up 5 seconds   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   redis
+2d8884839515   minio/minio                         "/usr/bin/docker-ent…"   38 seconds ago   Up 6 seconds   0.0.0.0:9000->9000/tcp, :::9000->9000/tcp   minio
+148ac8f7cb21   ghcr.io/chroma-core/chroma:latest   "/docker_entrypoint.…"   38 seconds ago   Up 6 seconds   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp   chroma
 ```
-
-6. To turn it off
-```sh
-docker compose down
-```
-
 
 
 ## Setting up backend
@@ -92,6 +82,8 @@ CHROMA_AUTH_TOKEN="chroma-token"
 ```sh
 cd backend
 docker compose up --build -d
+docker logs backend
+cd ..
 ```
 
 
@@ -108,14 +100,19 @@ REDIS_URL="redis:6379"
 REDIS_DB="0"
 REDIS_PASSWORD="password"
 OPENAI_API_KEY="YOUR_OPENAI_KEY"
-CHROMA_SERVER_AUTH_CREDENTIALS="chroma-token"
+CHROMA_URL="chroma"
+CHROMA_PORT="8000"
+CHROMA_AUTH_TOKEN="chroma-token"
 ```
 
 2. Start the queue ingestor.
 ```sh
 cd build-index
-docker compose up --build
+docker compose up --build -d
+docker logs build-index
+cd ..
 ```
+
 
 It will ingest the data you send in the next step
 
@@ -126,14 +123,24 @@ It will ingest the data you send in the next step
 BACKEND_URL="http://backend:8080"
 ```
 
-2. Start the batch upload script. It uploads everything under `files/` folder with it's foldername and filename preserved (only one level for this workshop).
+2. Start the batch upload script. It uploads everything under `batch-upload/files/` folder with it's foldername and filename preserved (only one level for this workshop).
 ```sh
 cd batch-upload
 docker compose up --build
+cd ..
+```
+
+3. You can see the data being processed by the different services:
+```sh
+docker logs backend
+docker logs build-index
 ```
 
 # Running the Q&A App
 1. Go to the `milo/` folder
+```sh
+cd milo/
+```
 
 2. Make sure you install dependencies:
 ```sh
@@ -146,3 +153,10 @@ streamlit run milo.py
 ```
 
 4. Ask your mlops questions from the database.
+
+## Teardown
+```sh
+pushd build-index && docker compose down && popd
+pushd backend && docker compose down && popd
+pushd common && docker compose down && popd
+```

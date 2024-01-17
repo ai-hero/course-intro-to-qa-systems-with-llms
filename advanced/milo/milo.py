@@ -8,11 +8,12 @@ import streamlit as st
 def send_question(question: str) -> Any:
     """Send the question to the chat service and get the response."""
     url = "http://localhost:8080/chat"
-    response = httpx.post(url, json={"question": question})
+    response = httpx.post(url, json={"question": question}, timeout=30)
     return response.json()
 
 
 def main() -> None:
+    """main"""
     st.title("Milo - Your Q&A Buddy")
 
     # User inputs their question
